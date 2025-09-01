@@ -6,6 +6,8 @@ import Register from "../pages/authenticate/register";
 import Login from "../pages/authenticate/Login";
 import AppLayout from "../components/AppLayout";
 import ForgotPass from "../pages/authenticate/ForgotPass";
+import JobDashboard from "@/pages/JobDashboard";
+import JobApply from "@/pages/JobApply";
 
 const AppRouter = () => {
     const router = createBrowserRouter([
@@ -25,6 +27,14 @@ const AppRouter = () => {
                 {
                     path: "/forgot-pass",
                     element:<ForgotPass/>
+                },
+                {
+                    path: "/job-dashboard",
+                    element:<JobDashboard/>
+                },
+                {
+                    path:"/job-apply",
+                    element:<JobApply/>
                 }
             ]
         },

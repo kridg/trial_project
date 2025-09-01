@@ -1,3 +1,3 @@
-// import Logo from "../assets/logo.png"
+import logo from "../assets/logo.jpg"
 
-// export {Logo}
+export {logo}

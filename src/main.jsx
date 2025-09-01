@@ -6,6 +6,8 @@ import AppRouter from './router/AppRouter.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AppRouter />
+    <div className='bg-gray-200 h-screen'>
+      <AppRouter />
+    </div>
   </StrictMode>,
 )

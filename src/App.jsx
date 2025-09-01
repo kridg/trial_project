@@ -1,15 +1,14 @@
-import { useState } from 'react'
+
 import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
 
-function App() {
-
+const App = () => {
+  
   return (
-    <div>
-      <p className='font-bold'>This is my 1st project</p>
-    </div>
+    <div>App</div>
   )
 }
+
 
 export default App
