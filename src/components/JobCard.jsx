@@ -13,19 +13,19 @@ import React from 'react'
 
 const JobCard = ({jobData}) => {
     return (
-        <div className=" p-6 rounded-xl items-center "> 
-            <Card className="w-[320px] h-[250px]">
+        <div> 
+            <Card className="w-[320px] h-[250px] p-5 rounded-xl hover:shadow-lg">
             <CardHeader>
-                <CardTitle>{jobData.JobTitle}</CardTitle>
-                <CardDescription>{jobData.CompanyName}</CardDescription>
+                <CardTitle>{jobData.jobtitle}</CardTitle>
+                <CardDescription>{jobData.companyname}</CardDescription>
             </CardHeader>
             <CardContent>
-                <p>Required Skills: {jobData.RequiredSkills}</p>
+                <p>Required Skills: {jobData.requiredskills}</p>
                 
-                <p className="font-light">{jobData.JobSite}</p>  
+                <p className="font-light">{jobData.jobsite}</p>  
             </CardContent>
             <CardFooter className="flex justify-between">   
-                <p>{jobData.Date}</p>             
+                <p>{jobData.date}</p>             
                 <Link to="/job-apply">
                 <CardAction className="bg-gray-600 text-white p-1.5 rounded-2xl">Apply for Job</CardAction>
                 </Link>
