@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import supabase from '../../../supabaseClient'
 import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate } from 'react-router'
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -13,6 +14,7 @@ const schema = yup.object().shape({
     .oneOf([yup.ref("password")], "Passwords must match")
     .required("Confirm Password is required"),
   gmail: yup.string().email("Invalid email format").required("Gmail is required"),
+  role:yup.string().required("This field is required!")
 })
 
 const Register = () => {
@@ -31,18 +33,19 @@ const Register = () => {
     setBuffer(true)
     setErrMsg(null)
     try {
-      const { gmail, name, password } = userData
+      const { gmail, name, password, role } = userData
       const payload = {
         email: gmail,
         password,
         options: {
           data: {
-            name
+            name,
           }
         }
       }
 
       const { data, error } = await supabase.auth.signUp(payload)
+      
 
       if(error){
         setErrMsg(error.message)
@@ -51,6 +54,15 @@ const Register = () => {
       toast.success("Registered Successfully!") 
 
       console.log(data)
+
+      const user=data.user
+      await supabase.from("profiles").insert([
+        {
+          id:user.id,
+          role:role
+        }
+      ])
+
     } catch (error) {
       console.log(error)
       toast.error("Error!")
@@ -73,7 +85,7 @@ const Register = () => {
               id="name"
               type="text"
               {...register("name")}
-              placeholder="Enter Student Name"
+              placeholder="Enter Full Name"
               className="w-full p-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <p className="text-red-500 text-xs mt-1">{errors.name?.message}</p>
@@ -118,6 +130,14 @@ const Register = () => {
             />
             <p className="text-red-500 text-xs mt-1">{errors.gmail?.message}</p>
           </div>
+          <label htmlFor="role" className="block mb-2 text-sm font-medium text-gray-600">
+          Role
+        </label>
+        <select id="role"className="w-full p-2 mb-3 border rounded-lg" {...register("role")}>
+          <option value="">Select One</option>
+          <option value="employer">Employer</option>
+          <option value="jobseeker">Job Seeker</option>
+        </select>
           <p className='text-sm text-red-500'>{errMsg}</p>
           <button type="submit" disabled={buffer}
             className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"

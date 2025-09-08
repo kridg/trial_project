@@ -31,37 +31,42 @@ import {
     CardFooter,
 } from "@/components/ui/card"
 import supabase from "../../supabaseClient"
+import { useAuth } from "@/context/AuthContext"
 
 
-// ✅ Validation schema with Yup
 const schema = yup.object().shape({
-    JobTitle: yup.string().required("Job title is required"),
-    CompanyName: yup.string().required("Company name is required"),
-    RequiredSkills: yup.string().required("Skills are required"),
-    JobSite: yup.string().required("Job site is required"),
-    Date: yup.date().required("Date is required"),
+    jobtitle: yup.string().required("Job title is required"),
+    companyname: yup.string().required("Company name is required"),
+    requiredskills: yup.string().required("Skills are required"),
+    jobsite: yup.string().required("Job site is required"),
+    date: yup.date().required("Date is required"),
 })
 
 const AddJobForm = () => {
+    const { session } = useAuth()
+
     const form = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
-            JobTitle: "",
-            CompanyName: "",
-            RequiredSkills: "",
-            JobSite: "",
-            Date: "",
+            jobtitle: "",
+            companyname: "",
+            requiredskills: "",
+            date: "",
+            jobsite: "",
+            created_by:"",
         },
     })
 
     const onSubmit = async (formData) => {
         try {
             const { data, error } = await supabase
-                .from('jobDescTable')
-                .insert([formData])
+                .from('jobdesctable')
+                .insert([
+                    {...formData, created_by: session?.user?.id}
+                ])
                 .select("*")
             if(error){
-                console.log("Error1",error)
+                console.log("Supabase insert error",error)
             }
         }
         catch (err) {
@@ -82,7 +87,7 @@ const AddJobForm = () => {
                             {/* Job Title */}
                             <FormField
                                 control={form.control}
-                                name="JobTitle"
+                                name="jobtitle"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Job Title</FormLabel>
@@ -97,7 +102,7 @@ const AddJobForm = () => {
                             {/* Company Name */}
                             <FormField
                                 control={form.control}
-                                name="CompanyName"
+                                name="companyname"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Company Name</FormLabel>
@@ -112,7 +117,7 @@ const AddJobForm = () => {
                             {/* Required Skills */}
                             <FormField
                                 control={form.control}
-                                name="RequiredSkills"
+                                name="requiredskills"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Required Skills</FormLabel>
@@ -130,7 +135,7 @@ const AddJobForm = () => {
                             {/* Job Site */}
                             <FormField
                                 control={form.control}
-                                name="JobSite"
+                                name="jobsite"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Job Site</FormLabel>
@@ -145,7 +150,7 @@ const AddJobForm = () => {
                             {/* Date */}
                             <FormField
                                 control={form.control}
-                                name="Date"
+                                name="date"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Date</FormLabel>

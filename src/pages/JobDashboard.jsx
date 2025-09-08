@@ -12,20 +12,20 @@ import { useNavigate } from 'react-router'
 
 
 const JobDashboard = () => {
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const { session } = useAuth()
-    
+
     // console.log(session)
 
     const [jobDesc, setJobDesc] = useState([])
     const [err, setErr] = useState()
 
     const fetchData = async () => {
-        if (session==null){
-        navigate('/login')
-    }
+        if (session == null) {
+            navigate('/login')
+        }
         try {
-            const { data, error } = await supabase.from('jobDescTable').select('*').order("ID");
+            const { data, error } = await supabase.from('jobdesctable').select('*').order("id");
 
             if (error) {
                 setErr(error)
@@ -52,10 +52,10 @@ const JobDashboard = () => {
                                 <Popover.Title className="text-base font-medium">
                                     Add Job Form
                                 </Popover.Title>
-                                <Popover.Description className="text-base text-gray-600">
+                                <div className="text-base text-gray-600">
                                     <AddJobForm />
-                                </Popover.Description>
-                                
+                                </div>
+
                             </Popover.Popup>
                         </Popover.Positioner>
                     </Popover.Portal>
@@ -65,7 +65,7 @@ const JobDashboard = () => {
             {console.log(jobDesc)}
             <div className='flex flex-wrap gap-5'>
                 {jobDesc.map((job) => (
-                    <div key={job.ID}>
+                    <div key={job.id}>
                         <JobCard jobData={job} />
                     </div>
                 ))}
