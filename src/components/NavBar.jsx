@@ -1,48 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import { logo } from '../script/images'
 import { Link, useNavigate } from 'react-router'
-import { useAuth } from '@/context/AuthContext'
 import supabase from '../../supabaseClient'
+import { useDispatch, useSelector } from 'react-redux'
+import { logout } from '@/redux/userSlice'
 
 const NavBar = () => {
-  const { session, signOut, setSession } = useAuth()
-  const [role, setRole] = useState(null);
+  const dispatch=useDispatch()
+  const user=useSelector((state)=>state.user.value)
   const navigate=useNavigate()
 
+
   const logOutNav=async()=>{
-    await signOut()
+    try{
+      await supabase.auth.signOut()
+    } catch(err){
+      console.log('signout error',err)
+    }
+
+    dispatch(logout())
     navigate("/")
   }
-  useEffect(() => {
-    if (!session) {
-      setRole(null)
-      return
-    }
-    //   const useSession = async () => {
-    //     if (session) {
-    //       const { data: profile } = await supabase.from("profiles")
-    //         .select("role").eq("id", session.user.id)
-    //         .single()
-    //       if (profile) {
-    //   setRole(profile.role);
-    // }
-    //     }
-    //   }
-    const getRole = async () => {
-      const { data, error } = await supabase.from("profiles")
-        .select("role").eq("id", session.user.id)
-        .single()
-
-      if(error || !data){
-        console.log(error)
-        setRole(null)
-      } else{
-        setRole(data.role)
-      }
-      
-    }
-    getRole()
-  }, [session])
 
   return (
     <div className='bg-black p-8 flex items-center justify-between text-white'>
@@ -53,28 +31,17 @@ const NavBar = () => {
 
         </div>
       </Link>
-      <div className='flex space-x-6 font-semibold '>
-        <p>Home</p>
-        <Link to="/">
-          <p>Jobs</p>
-        </Link>
-        <Link to='/training'>
-        <p>Trainings</p>
-        </Link>
-        <Link to='/blogs'>
-        <p>Blogs</p>
-        </Link>
-        
-        {session && role === "employer" && <Link to='/job-dashboard'>Employer</Link>}
 
-        {/* {!session && <Link to='/login'>Log In</Link>}
-        {!session && <Link to='/register'>Sign Up</Link>} */}
+      <div className='flex space-x-6 font-semibold '>
+        <Link to="/"><p>Jobs</p></Link>
+        <Link to='/training'><p>Trainings</p></Link>
+        <Link to='/blogs'><p>Blogs</p></Link>
+        {user?.email && <Link to="/job-dashboard">Employer</Link>}
       </div>
 
-      {/* session and authentication section */}
-      {session ? (
+      {user?.email ? (
         <div>
-          <p>Hi, {session.user.email}!</p>
+          <p>Hi, {user.email}!</p>
           <button onClick={logOutNav} >LogOut</button>
         </div>
       ) : (

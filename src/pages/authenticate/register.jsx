@@ -14,12 +14,12 @@ const schema = yup.object().shape({
     .oneOf([yup.ref("password")], "Passwords must match")
     .required("Confirm Password is required"),
   gmail: yup.string().email("Invalid email format").required("Gmail is required"),
-  role:yup.string().required("This field is required!")
+  role: yup.string().required("This field is required!")
 })
 
 const Register = () => {
   const [errMsg, setErrMsg] = useState(null)
-  const [buffer,setBuffer]=useState(false)
+  const [buffer, setBuffer] = useState(false)
 
   const {
     register,
@@ -40,33 +40,34 @@ const Register = () => {
         options: {
           data: {
             name,
+            role,
           }
         }
       }
 
       const { data, error } = await supabase.auth.signUp(payload)
-      
 
-      if(error){
+
+      if (error) {
         setErrMsg(error.message)
       }
 
-      toast.success("Registered Successfully!") 
+      toast.success("Registered Successfully!")
 
       console.log(data)
 
-      const user=data.user
+      const user = data.user
       await supabase.from("profiles").insert([
         {
-          id:user.id,
-          role:role
+          id: user.id,
+          role: role
         }
       ])
 
     } catch (error) {
       console.log(error)
       toast.error("Error!")
-    } finally{
+    } finally {
       setBuffer(false)
     }
     // console.log(userData)
@@ -131,18 +132,19 @@ const Register = () => {
             <p className="text-red-500 text-xs mt-1">{errors.gmail?.message}</p>
           </div>
           <label htmlFor="role" className="block mb-2 text-sm font-medium text-gray-600">
-          Role
-        </label>
-        <select id="role"className="w-full p-2 mb-3 border rounded-lg" {...register("role")}>
-          <option value="">Select One</option>
-          <option value="employer">Employer</option>
-          <option value="jobseeker">Job Seeker</option>
-        </select>
+            Role
+          </label>
+          <select id="role" className="w-full p-2 mb-3 border rounded-lg" {...register("role")}>
+            <option value="">Select One</option>
+            <option value="employer">Employer</option>
+            <option value="jobseeker">Job Seeker</option>
+            {/* <option value="admin">Admin</option> */}
+          </select>
           <p className='text-sm text-red-500'>{errMsg}</p>
           <button type="submit" disabled={buffer}
             className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
           >
-            {buffer?"Registering...":"Register"}
+            {buffer ? "Registering..." : "Register"}
           </button>
         </form>
       </div>

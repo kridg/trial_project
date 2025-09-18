@@ -5,11 +5,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { LoginSchema } from '../../schema/LoginSchema';
 import supabase from '../../../supabaseClient';
 import { useAuth } from '@/context/AuthContext';
+import { useSelector, useDispatch } from 'react-redux'
+import { loginData } from '@/redux/userSlice';
 
 const Login = () => {
     const [errorMsg, setErrorMsg] = useState(null)
-    const navigate=useNavigate()
-    const {signIn}=useAuth()
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const {
         register,
@@ -18,16 +20,34 @@ const Login = () => {
             resolver: yupResolver(LoginSchema)
         })
 
-    
-
     const onSubmit = async (userData) => {
         setErrorMsg(null)
         try {
-            await signIn(userData.email,userData.password)
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: userData.email,
+                password: userData.password,
+            });
+
+            if (error) throw error;
+
+            // let user=data?.user
+            // if (!user){
+            //     const { data: response, error:userError } = await supabase.auth.getUser()
+            //     if (userError) throw userError;
+
+            //     user=response?.user
+            // }
+
+            // if (!user) throw new Error('Could not retrieve user after sign-in')
+
+            dispatch(loginData(data.user))
+            console.log(data.user)
+
             navigate('/job-dashboard')
-            console.log(userData)
-        } catch (error) {
-            console.log('Login Error',error)
+            
+        } catch (err) {
+            console.log('Login Error', err)
+            setErrorMsg(err?.message ?? 'Login failed')
         }
     }
     return (

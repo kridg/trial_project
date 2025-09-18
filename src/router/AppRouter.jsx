@@ -12,60 +12,38 @@ import supabase from "../../supabaseClient";
 import Trainings from "@/pages/Trainings";
 import Blogs from "@/pages/Blogs";
 import AboutUs from "@/pages/AboutUs";
+
 const AppRouter = () => {
-    // const {session}=useAuth()
     const router = createBrowserRouter([
         {
             path: "/",
             element: <AppLayout />,
             children: [
                 { index: true, element: <App /> },
-                {
-                    path: "/register",
-                    element: <Register />
-                },
-                {
-                    path: "/login",
-                    element: <Login />
-                },
-                {
-                    path: "/forgot-pass",
-                    element:<ForgotPass/>
-                },
-                {
-                    path:"/training",
-                    element:<Trainings/>
-                },
-                {
-                    path:"/blogs",
-                    element:<Blogs/>
-                },
-                {
-                    path:"about-us",
-                    element:<AboutUs/>
-                },
-                {
-                    path: "/job-dashboard",
-                    element:<JobDashboard/>,
+                {path: "/register",element: <Register />},
+                {path: "/login",element: <Login />},
+                {path: "/forgot-pass",element:<ForgotPass/>},
+                {path:"/training",element:<Trainings/>},
+                {path:"/blogs",element:<Blogs/>},
+                {path:"about-us",element:<AboutUs/>},
+                {path: "/job-dashboard",element:<JobDashboard/>,
                     loader:async()=>{
-                        const {data:{session}}=await supabase.auth.getSession()
-                        if(!session){
-                            console.log("Not authorized!!")
-                        }
+                        // const {data:{session}}=await supabase.auth.getSession()
+                        // if(!session){
+                        //     console.log("Not authorized!!")
+                        // }
 
-                        const {data:profile}=await supabase.from("profiles").select("role").eq("id",session.user.id)
-                        .single()
+                        // const {data:profile}=await supabase.from("profiles").select("role").eq("id",session.user.id)
+                        // .single()
 
-                        if (profile?.role !=="employer"){
-                            console.log("Cannot access this page without authorization!")
-                        }
-                        return profile
+                        // if (profile?.role !=="employer"){
+                        //     console.log("Cannot access this page without authorization!")
+                        // }
+                        // return profile
+                        return null
                     }
                 },
-                {
-                    path:"/job-apply",
-                    element:<JobApply/>
-                },
+                {path:"/job-apply",element:<JobApply/>},
             ]
         },
     ]);

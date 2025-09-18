@@ -9,21 +9,16 @@ import { Button } from "@/components/ui/button"
 import { Popover } from '@base-ui-components/react/popover';
 import { useAuth } from '@/context/AuthContext'
 import { useNavigate } from 'react-router'
+import { useSelector } from 'react-redux'
 
 
 const JobDashboard = () => {
-    const navigate = useNavigate()
-    const { session } = useAuth()
-
-    // console.log(session)
+    const {id,email,role}=useSelector((state)=>state.user)
 
     const [jobDesc, setJobDesc] = useState([])
     const [err, setErr] = useState()
 
     const fetchData = async () => {
-        if (session == null) {
-            navigate('/login')
-        }
         try {
             const { data, error } = await supabase.from('jobdesctable').select('*').order("id");
 
@@ -38,10 +33,31 @@ const JobDashboard = () => {
     useEffect(() => { fetchData() }, [])
     return (
         <div className='p-10'>
-            <div className='flex justify-between items-center'>
+            <h1>Hello <span>{email}</span></h1>
+            <h1>You are:{role}</h1>
+            
+            {console.log(jobDesc)}
+            <div className='flex flex-wrap gap-5'>
+                {jobDesc.map((job) => (
+                    <div key={job.id}>
+                        <JobCard jobData={job} />
+                    </div>
+                ))}
+            </div>
+
+
+        </div>
+    )
+}
+
+export default JobDashboard
+
+// popover popup 
+/**
+ * <div className='flex justify-between items-center'>
                 <p className='font-bold'>Job Listings</p>
                 <Popover.Root>
-                    {/* use Dialog from shadcn next time */}
+                     use Dialog from shadcn next time 
                     <Popover.Trigger className="flex p-2 items-center justify-center rounded-md border-gray-200 bg-gray-50 text-black font-semibold hover:bg-gray-100 focus-visible:outline focus-visible:-outline-offset-1 active:bg-gray-100 data-[popup-open]:bg-gray-100">
                         Add Job
                     </Popover.Trigger>
@@ -62,20 +78,4 @@ const JobDashboard = () => {
                 </Popover.Root>
 
             </div>
-            {console.log(jobDesc)}
-            <div className='flex flex-wrap gap-5'>
-                {jobDesc.map((job) => (
-                    <div key={job.id}>
-                        <JobCard jobData={job} />
-                    </div>
-                ))}
-            </div>
-
-
-        </div>
-    )
-}
-
-export default JobDashboard
-
-// popover popup 
+ */
